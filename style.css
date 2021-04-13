@@ -52,10 +52,17 @@
     outline: none !important;
 }
 
+
 .task-button {
     width: 20px;
     height: 20px;
     margin: auto 10px auto 0;
+}
+
+
+.task-button:hover {
+        background: url("img/delete_on_svg.svg");
+        background-size: 97%;
 }
 
 .append-button {
