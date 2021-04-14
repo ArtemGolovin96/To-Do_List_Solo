@@ -1,3 +1,6 @@
+
+
+
 // Кнопка сортировки
 let sortImg = document.querySelector('.sortbutton');
 let  delButton = document.querySelectorAll('.task-button');
@@ -5,6 +8,7 @@ let firstDeleteButton = document.querySelector('.task-button')
 
 //Обработчики наведения мыши на кнопку сортировки
 sortImg.addEventListener('mouseover', (event) => {
+    event.preventDefault();
         if (sortImg.src.endsWith('/img/todo_down_svg.svg')) {
             sortImg.src = './img/sort_down_black.svg';
         } else if (sortImg.src.endsWith('/img/sort_up_svg.svg')) {
@@ -21,7 +25,7 @@ sortImg.addEventListener('mouseout', (event) => {
 });
 
 //Обработчик клика мыши на кнопку сортировки
-function sorEventLisImg () {
+function sorEventLisImg () {    
     if (sortImg.src.endsWith('/img/sort_down_black.svg')) {
         sortImg.src = './img/sort_up_black.svg';
         sortList();
@@ -38,12 +42,18 @@ sortImg.addEventListener('click', sorEventLisImg);
 // "Вешаем" обработчик на кнопку удаления
 function addEvListenerClickDelete (arg) {
     arg.addEventListener('click', (event) => {
+        event.preventDefault();
         arg.parentNode.remove();
+        if (sortImg.src.endsWith('/img/delete_off_svg.svg')) {
+            sortImg.src = './img/delete_off_svg.svg';
+        } else if (sortImg.src.endsWith('/img/sort_up_.svg')) {
+            sortImg.src = './img/sort_up_.svg';
+        }
     })
 //Обработчик нажатия пробела для управления
     arg.addEventListener('keydown', (event) => {
+        event.preventDefault();
         if (event.keyCode == 32 && arg == document.activeElement) {
-            event.preventDefault();
             arg.parentNode.remove();
 
         }
@@ -60,6 +70,7 @@ let list = document.querySelector('.list');// Таблица с элемента
 let input = document.querySelector('.task-text') // Инпут для текста
 //Обработчик клика для кнопки добавления
     addButton.addEventListener('click', (event) => {
+        event.preventDefault();
         let cloneInput = div.cloneNode(true);
         cloneInput.firstElementChild.value = '';
         addEvListenerFocusBlurToDelButton(cloneInput);
@@ -69,6 +80,7 @@ let input = document.querySelector('.task-text') // Инпут для текст
 //Управление с клавиатуры для кнопки "Добавить"
 //Обработчик сработает при фокусе на кнопке и нажатии пробела
     addButton.addEventListener('keydown', (event) => {
+        event.preventDefault();
         if (event.keyCode == 32 && addButton == document.activeElement) {
             let cloneInput = div.cloneNode(true);
             cloneInput.firstElementChild.value = '';
@@ -100,7 +112,6 @@ function sortList() {
     arr.forEach((el) => {
         list.append(el)
     })
-
 }
 
 // Сортировка списка задач по алфавиту в ОБРАТНОМ порядке
@@ -131,10 +142,12 @@ function sortListReverse() {
 //Анимация при выборе клавишей TAB
 function addEvListenerFocusBlurToDelButton (argument) {
         argument.lastElementChild.addEventListener('focus', (event) => {
+            event.preventDefault();
                 argument.lastElementChild.style.background = 'url("img/delete_on_svg.svg")';
                 argument.lastElementChild.style.backgroundSize = '97%';
               });
         argument.lastElementChild.addEventListener('blur', (event) => {
+            event.preventDefault();
             argument.lastElementChild.style.background = 'none';
             argument.lastElementChild.src = './img/delete_off_svg.svg';
             });
@@ -142,11 +155,19 @@ function addEvListenerFocusBlurToDelButton (argument) {
 }
 
 sortImg.addEventListener('focus', (event) => {
+    event.preventDefault();
     sortImg.src = './img/sort_down_black.svg';
   });
 
-sortImg.addEventListener('blur', (event) => {
-    sortImg.src = './img/todo_down_svg.svg';
+sortImg.addEventListener('focusout', (event) => {
+    if (sortImg.src.endsWith('/img/sort_down_black.svg')) {
+        sortImg.src = './img/todo_down_svg.svg';
+        sortList();
+    } else if (sortImg.src.endsWith('/img/sort_up_black.svg')) {
+        sortImg.src = './img/sort_up_svg.svg';
+        sortListReverse();
+    }
+    event.preventDefault();     
   });
 
 
