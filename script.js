@@ -3,7 +3,8 @@ let sortImg = document.querySelector('.sortbutton');
 let  delButton = document.querySelectorAll('.task-button');
 let firstDeleteButton = document.querySelector('.task-button')
 
-    sortImg.addEventListener('mouseover', (event) => {
+//Обработчики наведения мыши на кнопку сортировки
+sortImg.addEventListener('mouseover', (event) => {
         if (sortImg.src.endsWith('/img/todo_down_svg.svg')) {
             sortImg.src = './img/sort_down_black.svg';
         } else if (sortImg.src.endsWith('/img/sort_up_svg.svg')) {
@@ -19,9 +20,8 @@ sortImg.addEventListener('mouseout', (event) => {
         }
 });
 
-
+//Обработчик клика мыши на кнопку сортировки
 function sorEventLisImg () {
-    
     if (sortImg.src.endsWith('/img/sort_down_black.svg')) {
         sortImg.src = './img/sort_up_black.svg';
         sortList();
@@ -30,7 +30,6 @@ function sorEventLisImg () {
         sortListReverse();
     }
 }
-
 sortImg.addEventListener('click', sorEventLisImg);
 
 
@@ -41,6 +40,7 @@ function addEvListenerClickDelete (arg) {
     arg.addEventListener('click', (event) => {
         arg.parentNode.remove();
     })
+//Обработчик нажатия пробела для управления
     arg.addEventListener('keydown', (event) => {
         if (event.keyCode == 32 && arg == document.activeElement) {
             event.preventDefault();
@@ -49,16 +49,16 @@ function addEvListenerClickDelete (arg) {
         }
     })
 }
-addEvListenerClickDelete(firstDeleteButton); //"Вешае" на первую кнопку удаления
+addEvListenerClickDelete(firstDeleteButton); //"Вешаем" обработчик на первую кнопку удаления
 
 
 
 // Кнопка добавить 
 let addButton = document.querySelector('.append-button'); // Кнопка "Добавить"
 let div = document.querySelector('.tasks'); // Копируемый элемент
-let list = document.querySelector('.list');
-let input = document.querySelector('.task-text')
-
+let list = document.querySelector('.list');// Таблица с элементами
+let input = document.querySelector('.task-text') // Инпут для текста
+//Обработчик клика для кнопки добавления
     addButton.addEventListener('click', (event) => {
         let cloneInput = div.cloneNode(true);
         cloneInput.firstElementChild.value = '';
@@ -66,6 +66,7 @@ let input = document.querySelector('.task-text')
         addEvListenerClickDelete (cloneInput.lastElementChild);
         list.append(cloneInput);
     });
+//Управление с клавиатуры для кнопки "Добавить"
 //Обработчик сработает при фокусе на кнопке и нажатии пробела
     addButton.addEventListener('keydown', (event) => {
         if (event.keyCode == 32 && addButton == document.activeElement) {
@@ -78,7 +79,7 @@ let input = document.querySelector('.task-text')
     });
 
 
-// Сортировка списка задач по алфавиту в прямом порядке
+// Сортировка списка задач по алфавиту в ПРЯМОМ порядке
 function sortList() {
     let sortingList = document.querySelectorAll('.tasks');
     let list = document.querySelector('.list');
@@ -126,7 +127,7 @@ function sortListReverse() {
 
 }   
 
-// Адаптируем приложение для людей с ограничением по зрению
+//Управление с клавиатуры для кнопки сортировки и кнопки удаления
 //Анимация при выборе клавишей TAB
 function addEvListenerFocusBlurToDelButton (argument) {
         argument.lastElementChild.addEventListener('focus', (event) => {
@@ -150,7 +151,7 @@ sortImg.addEventListener('blur', (event) => {
 
 
 
-//"Ловим" события клавиатуры
+//"Ловим" все события клавиатуры
 
 function keyPress(e) {
     let keyNum;
@@ -174,3 +175,95 @@ document.onkeydown = function(event){
     })
 };
 
+//Drag n Drop
+const tasksListElement = document.querySelector(`.list`);
+const taskElements = tasksListElement.querySelectorAll(`.tasks`);
+
+// Перебираем все элементы списка и присваиваем нужное значение
+for (const task of taskElements) {
+  task.draggable = true;
+}
+
+tasksListElement.addEventListener(`dragstart`, (evt) => {
+    evt.target.classList.add(`selected`);
+  })
+  
+  tasksListElement.addEventListener(`dragend`, (evt) => {
+    evt.target.classList.remove(`selected`);
+  });
+
+  tasksListElement.addEventListener(`dragover`, (evt) => {
+    // Разрешаем сбрасывать элементы в эту область
+    evt.preventDefault();
+  
+    // Находим перемещаемый элемент
+    const activeElement = tasksListElement.querySelector(`.selected`);
+    // Находим элемент, над которым в данный момент находится курсор
+    const currentElement = evt.target;
+    // Проверяем, что событие сработало:
+    // 1. не на том элементе, который мы перемещаем,
+    // 2. именно на элементе списка
+    const isMoveable = activeElement !== currentElement &&
+      currentElement.classList.contains(`tasks`);
+  
+    // Если нет, прерываем выполнение функции
+    if (!isMoveable) {
+      return;
+    }
+  
+    // Находим элемент, перед которым будем вставлять
+    const nextElement = (currentElement === activeElement.nextElementSibling) ?
+        currentElement.nextElementSibling :
+        currentElement;
+  
+    // Вставляем activeElement перед nextElement
+    tasksListElement.insertBefore(activeElement, nextElement);
+  });
+
+  const getNextElement = (cursorPosition, currentElement) => {
+    // Получаем объект с размерами и координатами
+    const currentElementCoord = currentElement.getBoundingClientRect();
+    // Находим вертикальную координату центра текущего элемента
+    const currentElementCenter = currentElementCoord.y + currentElementCoord.height / 2;
+  
+    // Если курсор выше центра элемента, возвращаем текущий элемент
+    // В ином случае — следующий DOM-элемент
+    const nextElement = (cursorPosition < currentElementCenter) ?
+        currentElement :
+        currentElement.nextElementSibling;
+  
+    return nextElement;
+  };
+
+  tasksListElement.addEventListener(`dragover`, (evt) => {
+    evt.preventDefault();
+  
+    const activeElement = tasksListElement.querySelector(`.selected`);
+    const currentElement = evt.target;
+    const isMoveable = activeElement !== currentElement &&
+      currentElement.classList.contains(`tasks`);
+  
+    if (!isMoveable) {
+      return;
+    }
+  
+    // evt.clientY — вертикальная координата курсора в момент,
+    // когда сработало событие
+    const nextElement = getNextElement(evt.clientY, currentElement);
+  
+    // Проверяем, нужно ли менять элементы местами
+    if (
+      nextElement && 
+      activeElement === nextElement.previousElementSibling ||
+      activeElement === nextElement
+    ) {
+      // Если нет, выходим из функции, чтобы избежать лишних изменений в DOM
+      return;
+    }
+  
+    tasksListElement.insertBefore(activeElement, nextElement);
+  });
+
+
+
+//   Источник - https://habr.com/ru/company/htmlacademy/blog/541972/

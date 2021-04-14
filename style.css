@@ -55,6 +55,7 @@
     margin:3px 0px 3px 10px;
     border: none;
     outline: none !important;
+    width: 250px;
 }
 
 
@@ -79,6 +80,10 @@
 }
 
 .append-button:active, .append-button:focus {
-   outline: none;
+   outline: 0.1px;
 }
 
+.selected {
+    opacity: 0.9;
+    border: 0.1px solid red;
+}
