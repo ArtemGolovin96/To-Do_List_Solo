@@ -65,8 +65,10 @@
     margin: 5px 20px 5px 0;
 }
 
-.task-button:active, .task-button:focus {
+.task-button:focus, .task-button:active {
     outline: none;
+    background: url("img/delete_on_svg.svg");
+    background-size: 97%;
 }
 
 
@@ -80,7 +82,7 @@
 }
 
 .append-button:active, .append-button:focus {
-   outline: 0.1px;
+
 }
 
 .selected {

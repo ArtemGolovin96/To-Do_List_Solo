@@ -73,6 +73,7 @@ let input = document.querySelector('.task-text') // Инпут для текст
         event.preventDefault();
         let cloneInput = div.cloneNode(true);
         cloneInput.firstElementChild.value = '';
+        cloneInput.lastElementChild.setAttribute('tabindex', ``);
         addEvListenerFocusBlurToDelButton(cloneInput);
         addEvListenerClickDelete (cloneInput.lastElementChild);
         list.append(cloneInput);
