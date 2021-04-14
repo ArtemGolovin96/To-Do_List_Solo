@@ -52,8 +52,9 @@ function addEvListenerClickDelete (arg) {
     })
 //Обработчик нажатия пробела для управления
     arg.addEventListener('keydown', (event) => {
-        event.preventDefault();
-        if (event.keyCode == 32 && arg == document.activeElement) {
+
+        if ((event.keyCode == 32 && arg == document.activeElement) || (event.keyCode == 13 && arg == document.activeElement)) {
+            event.preventDefault();
             arg.parentNode.remove();
 
         }
@@ -68,21 +69,23 @@ let addButton = document.querySelector('.append-button'); // Кнопка "До�
 let div = document.querySelector('.tasks'); // Копируемый элемент
 let list = document.querySelector('.list');// Таблица с элементами
 let input = document.querySelector('.task-text') // Инпут для текста
+addEvListenerFocusBlurToDelButton (div); // Обработчик для первой кнопки удаления
 //Обработчик клика для кнопки добавления
     addButton.addEventListener('click', (event) => {
         event.preventDefault();
         let cloneInput = div.cloneNode(true);
-        cloneInput.firstElementChild.value = '';
+        cloneInput.firstElementChild.checked = '';
         cloneInput.lastElementChild.setAttribute('tabindex', ``);
         addEvListenerFocusBlurToDelButton(cloneInput);
-        addEvListenerClickDelete (cloneInput.lastElementChild);
+        addEvListenerClickDelete(cloneInput.lastElementChild);
+        addEventListenerCheckBox(cloneInput.firstElementChild);
+        console.log(cloneInput.firstElementChild);
         list.append(cloneInput);
     });
 //Управление с клавиатуры для кнопки "Добавить"
 //Обработчик сработает при фокусе на кнопке и нажатии пробела
     addButton.addEventListener('keydown', (event) => {
-        event.preventDefault();
-        if (event.keyCode == 32 && addButton == document.activeElement) {
+        if ((event.keyCode == 32 && addButton == document.activeElement) || (event.keyCode == 13 && addButton == document.activeElement)) {
             let cloneInput = div.cloneNode(true);
             cloneInput.firstElementChild.value = '';
             addEvListenerFocusBlurToDelButton(cloneInput);
@@ -156,19 +159,21 @@ function addEvListenerFocusBlurToDelButton (argument) {
 }
 
 sortImg.addEventListener('focus', (event) => {
-    event.preventDefault();
-    sortImg.src = './img/sort_down_black.svg';
+    event.preventDefault(); 
+    if (sortImg.src.endsWith('/img/todo_down_svg.svg')) {
+        sortImg.src = './img/sort_down_black.svg';
+    } else if (sortImg.src.endsWith('/img/sort_up_svg.svg')) {
+        sortImg.src = './img/sort_up_black.svg';
+    }
   });
 
-sortImg.addEventListener('focusout', (event) => {
+sortImg.addEventListener('blur', (event) => {
+    event.preventDefault();  
     if (sortImg.src.endsWith('/img/sort_down_black.svg')) {
         sortImg.src = './img/todo_down_svg.svg';
-        sortList();
     } else if (sortImg.src.endsWith('/img/sort_up_black.svg')) {
         sortImg.src = './img/sort_up_svg.svg';
-        sortListReverse();
     }
-    event.preventDefault();     
   });
 
 
@@ -187,7 +192,7 @@ function keyPress(e) {
 document.onkeydown = keyPress;
 
 document.onkeydown = function(event){
-    if (event.keyCode == 32 && sortImg == document.activeElement) {
+    if ((event.keyCode == 32 && sortImg == document.activeElement) || (event.keyCode == 13 && sortImg == document.activeElement)) {
         event.preventDefault();
         sorEventLisImg ()
     }
@@ -289,3 +294,25 @@ tasksListElement.addEventListener(`dragstart`, (evt) => {
 
 
 //   Источник - https://habr.com/ru/company/htmlacademy/blog/541972/
+
+
+//Дополнение от преподавателя
+
+let doneList = document.querySelector('.donelist');
+let firstCheckBox = document.querySelector('.tasks');
+
+function addEventListenerCheckBox (argument) {
+    argument.addEventListener('click', (event) => {
+        console.log(argument)
+        if(!argument.checked) {
+            tasksListElement.append(argument.parentElement);
+        } else {
+            doneList.append(argument.parentElement);
+        }
+    })
+}
+addEventListenerCheckBox(firstCheckBox);
+
+
+
+

@@ -55,14 +55,15 @@
     margin:3px 0px 3px 10px;
     border: none;
     outline: none !important;
-    width: 250px;
+    width: 270px;
 }
+
 
 
 .task-button {
     width: 20px;
     height: 20px;
-    margin: 5px 20px 5px 0;
+    margin: 5px 10px 5px 0;
 }
 
 .task-button:focus, .task-button:active {
@@ -88,4 +89,8 @@
 .selected {
     opacity: 0.9;
     border: 0.1px solid red;
+}
+
+.checkbox {
+    margin: 10px 0px 0px 10px;
 }
