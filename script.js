@@ -42,7 +42,7 @@ function addEvListenerClickDelete (arg) {
     })
 //Обработчик нажатия пробела для управления
     arg.addEventListener('keydown', (event) => {
-        if (event.keyCode == 32 && arg == document.activeElement) {
+        if ((event.keyCode == 32 && arg == document.activeElement) || (event.keyCode == 13 && arg == document.activeElement)) {
             event.preventDefault();
             arg.parentNode.remove();
 
@@ -58,6 +58,7 @@ let addButton = document.querySelector('.append-button'); // Кнопка "До�
 let div = document.querySelector('.tasks'); // Копируемый элемент
 let list = document.querySelector('.list');// Таблица с элементами
 let input = document.querySelector('.task-text') // Инпут для текста
+addEvListenerFocusBlurToDelButton (div); // Обработчик для первой кнопки удаления
 //Обработчик клика для кнопки добавления
     addButton.addEventListener('click', (event) => {
         let cloneInput = div.cloneNode(true);
@@ -69,7 +70,7 @@ let input = document.querySelector('.task-text') // Инпут для текст
 //Управление с клавиатуры для кнопки "Добавить"
 //Обработчик сработает при фокусе на кнопке и нажатии пробела
     addButton.addEventListener('keydown', (event) => {
-        if (event.keyCode == 32 && addButton == document.activeElement) {
+        if ((event.keyCode == 32 && addButton == document.activeElement) || (event.keyCode == 13 && addButton == document.activeElement)) {
             let cloneInput = div.cloneNode(true);
             cloneInput.firstElementChild.value = '';
             addEvListenerFocusBlurToDelButton(cloneInput);
@@ -142,11 +143,21 @@ function addEvListenerFocusBlurToDelButton (argument) {
 }
 
 sortImg.addEventListener('focus', (event) => {
-    sortImg.src = './img/sort_down_black.svg';
+    event.preventDefault(); 
+    if (sortImg.src.endsWith('/img/todo_down_svg.svg')) {
+        sortImg.src = './img/sort_down_black.svg';
+    } else if (sortImg.src.endsWith('/img/sort_up_svg.svg')) {
+        sortImg.src = './img/sort_up_black.svg';
+    }
   });
 
 sortImg.addEventListener('blur', (event) => {
-    sortImg.src = './img/todo_down_svg.svg';
+    event.preventDefault();  
+    if (sortImg.src.endsWith('/img/sort_down_black.svg')) {
+        sortImg.src = './img/todo_down_svg.svg';
+    } else if (sortImg.src.endsWith('/img/sort_up_black.svg')) {
+        sortImg.src = './img/sort_up_svg.svg';
+    }
   });
 
 
@@ -165,7 +176,7 @@ function keyPress(e) {
 document.onkeydown = keyPress;
 
 document.onkeydown = function(event){
-    if (event.keyCode == 32 && sortImg == document.activeElement) {
+    if ((event.keyCode == 32 && sortImg == document.activeElement) || (event.keyCode == 13 && sortImg == document.activeElement)) {
         event.preventDefault();
         sorEventLisImg ()
     }
